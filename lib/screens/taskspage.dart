@@ -65,9 +65,7 @@ class _TasksPageState extends State<TasksPage> {
             tooltip: 'Clear All Tasks',
           ),
         ],
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
-        ),
+
       ),
       body: Container(
         decoration: BoxDecoration(gradient: backgroundGradient),
