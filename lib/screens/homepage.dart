@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'taskspage.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -42,9 +43,6 @@ class _HomepageState extends State<Homepage> {
         actions: [
           IconButton(icon: const Icon(Icons.settings), onPressed: () {}),
         ],
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
-        ),
       ),
       body: Container(
         decoration: BoxDecoration(gradient: backgroundGradient),
@@ -57,7 +55,7 @@ class _HomepageState extends State<Homepage> {
                 style: TextStyle(
                   fontSize: 26,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF2F80ED),
+                  color: Color.fromARGB(255, 246, 250, 255),
                   shadows: [
                     Shadow(
                       blurRadius: 8,
@@ -104,7 +102,7 @@ class _HomepageState extends State<Homepage> {
               const SizedBox(height: 24),
               OutlinedButton(
                 onPressed: () {
-                  _printAllTasks(); // طباعة المهام في الكونسول
+                  _navigateToTasksPage();
                 },
                 style: OutlinedButton.styleFrom(
                   foregroundColor: const Color.fromARGB(
@@ -112,7 +110,7 @@ class _HomepageState extends State<Homepage> {
                     249,
                     251,
                     255,
-                  ), // Blue
+                  ),
                   side: const BorderSide(
                     color: Color.fromARGB(255, 255, 255, 255),
                     width: 2,
@@ -184,16 +182,8 @@ class _HomepageState extends State<Homepage> {
                     });
                   });
 
-                  // طباعة جميع المهام في الكونسول
-                  print('📝 Total tasks: ${tasks.length}');
-                  print('📋 All tasks:');
-                  for (int i = 0; i < tasks.length; i++) {
-                    print(
-                      '${i + 1}. ${tasks[i]['title']} - Completed: ${tasks[i]['isCompleted']}',
-                    );
-                  }
-                  print('-------------------');
-
+                  
+                
                   _taskController.clear();
                   Navigator.of(context).pop();
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -206,7 +196,7 @@ class _HomepageState extends State<Homepage> {
                 }
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF2F80ED),
+                backgroundColor: const Color.fromARGB(255, 49, 131, 238),
               ),
               child: const Text(
                 'Add Task',
@@ -219,25 +209,24 @@ class _HomepageState extends State<Homepage> {
     );
   }
 
-  // دالة لطباعة جميع المهام
-  void _printAllTasks() {
-    print('\n🔍 === TASKS DEBUG INFO ===');
-    print('📊 Total number of tasks: ${tasks.length}');
+  void _navigateToTasksPage() async {
+    final updatedTasks = await Navigator.push<List<Map<String, dynamic>>>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TasksPage(
+          tasks: tasks,
+          onTasksUpdated: (updatedTasks) 
+          {
+              },
+        ),
+      ),
+    );
 
-    if (tasks.isEmpty) {
-      print('📭 No tasks available');
-    } else {
-      print('📋 Tasks list:');
-      for (int i = 0; i < tasks.length; i++) {
-        var task = tasks[i];
-        String status = task['isCompleted'] ? '✅ Completed' : '⏳ Pending';
-        print('${i + 1}. "${task['title']}" - $status');
-        print('   ID: ${task['id']}');
-        print('   Created: ${task['createdAt']}');
-        print('   --------');
+      if (updatedTasks != null) {
+      setState(() {
+        tasks = updatedTasks;
+      });
       }
-    }
-    print('🔍 === END DEBUG INFO ===\n');
   }
 
   @override
